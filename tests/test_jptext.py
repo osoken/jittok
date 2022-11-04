@@ -1,6 +1,7 @@
 import os
 
 import pytest
+
 from jittok import jptext
 
 
@@ -21,7 +22,7 @@ from jittok import jptext
         ["utf_8_sig"],
     ],
 )
-def test_guess_encoding(original_codec: str):
+def test_guess_encoding(original_codec: str) -> None:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(current_dir, "fixtures", "jptext", "codecs", f"{original_codec}.txt"), "rb") as fin:
         somebin = fin.read()

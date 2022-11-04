@@ -1,5 +1,7 @@
 import re
-from typing import Union
+from typing import Pattern, Union
+
+from .exceptions import UnknownEncodingError
 
 codec_list = [
     "cp932",
@@ -17,7 +19,7 @@ codec_list = [
 ]
 
 
-def guess_encoding(x: bytes, hint: Union[str, re.Pattern]) -> str:
+def guess_encoding(x: bytes, hint: Union[str, Pattern[str]]) -> str:
     if isinstance(hint, str):
         return guess_encoding(x, re.compile(hint))
     for c in codec_list:
@@ -27,3 +29,4 @@ def guess_encoding(x: bytes, hint: Union[str, re.Pattern]) -> str:
                 return c
         except ValueError:
             ...
+    raise UnknownEncodingError()
