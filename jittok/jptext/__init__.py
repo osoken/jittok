@@ -1,5 +1,7 @@
 import re
-from typing import Pattern, Union
+from typing import Optional, Pattern, Union
+
+import regex
 
 from .exceptions import UnknownEncodingError
 
@@ -19,12 +21,20 @@ codec_list = [
 ]
 
 
-def guess_encoding(x: bytes, hint: Union[str, Pattern[str]]) -> str:
+def guess_encoding(x: bytes, hint: Optional[Union[str, Pattern[str]]] = None) -> str:
+    if hint is None:
+        return guess_encoding(
+            x,
+            regex.compile(
+                r'[\p{Script=Han}\u3041-\u309F\u30A1-\u30FF\uFF01-\uFF0F\uFF1A-\uFF20\uFF3B-\uFF40\uFF5B-\uFF65\u3000-\u303F]+'
+            ),
+        )
     if isinstance(hint, str):
         return guess_encoding(x, re.compile(hint))
     for c in codec_list:
         try:
             buf = x.decode(c)
+            print(buf)
             if hint.match(buf) is not None:
                 return c
         except ValueError:
