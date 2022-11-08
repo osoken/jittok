@@ -37,3 +37,7 @@ def guess_encoding(x: bytes, hint: Optional[Union[str, Pattern[str]]] = None) ->
         except ValueError:
             ...
     raise UnknownEncodingError()
+
+
+def decode(x: bytes) -> str:
+    return x.decode(guess_encoding(x))
