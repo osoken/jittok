@@ -13,11 +13,9 @@ codec_list = [
     "utf_16_be",
     "utf_32",
     "utf_32_be",
-    "cp932",
     "euc_jp",
     "gbk",
     "iso2022_jp",
-    "johab",
 ]
 
 

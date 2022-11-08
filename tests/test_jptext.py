@@ -8,11 +8,9 @@ from jittok import jptext
 @pytest.mark.parametrize(
     ["original_codec"],
     [
-        ["cp932"],
         ["euc_jp"],
         ["gbk"],
         ["iso2022_jp"],
-        ["johab"],
         ["utf_16"],
         ["utf_16_be"],
         ["utf_32"],
@@ -34,11 +32,9 @@ def test_guess_encoding(original_codec: str) -> None:
 @pytest.mark.parametrize(
     ["original_codec"],
     [
-        ["cp932"],
         ["euc_jp"],
         ["gbk"],
         ["iso2022_jp"],
-        ["johab"],
         ["utf_16"],
         ["utf_16_be"],
         ["utf_32"],
