@@ -41,3 +41,7 @@ def guess_encoding(x: bytes, hint: Optional[Union[str, Pattern[str]]] = None) ->
 
 def decode(x: bytes) -> str:
     return x.decode(guess_encoding(x))
+
+
+def to_numeric(x: str) -> Union[float, int]:
+    return int(x.replace(",", ""))

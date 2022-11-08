@@ -1,4 +1,5 @@
 import os
+from typing import Union
 
 import pytest
 
@@ -74,4 +75,10 @@ def test_decode(original_codec: str) -> None:
         somebin = fin.read()
     expected = "期待した値"
     actual = jptext.decode(somebin)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(["argument", "expected"], [["123", 123], ["123,234", 123234]])
+def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
+    actual = jptext.to_numeric(argument)
     assert actual == expected
