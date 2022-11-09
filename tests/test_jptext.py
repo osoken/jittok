@@ -87,6 +87,7 @@ def test_decode(original_codec: str) -> None:
         ["-1000", -1000],
         ["-3,321,123,000", -3321123000],
         ["-12.322", -12.322],
+        ["一", 1],
     ],
 )
 def test_to_numeric(argument: str, expected: Union[float, int]) -> None:

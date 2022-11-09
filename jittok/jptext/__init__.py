@@ -44,6 +44,7 @@ def decode(x: bytes) -> str:
 
 
 def to_numeric(x: str) -> Union[float, int]:
-    if re.match(r"^-?[0-9,]+$", x):
-        return int(x.replace(",", ""))
-    return float(x)
+    x_ = x.translate(str.maketrans({"一": "1", "壱": "1"}))
+    if re.match(r"^-?[0-9,]+$", x_):
+        return int(x_.replace(",", ""))
+    return float(x_)
