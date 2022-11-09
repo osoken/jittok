@@ -78,7 +78,9 @@ def test_decode(original_codec: str) -> None:
     assert actual == expected
 
 
-@pytest.mark.parametrize(["argument", "expected"], [["123", 123], ["123,234", 123234], ["3.14", 3.14]])
+@pytest.mark.parametrize(
+    ["argument", "expected"], [["123", 123], ["123,234", 123234], ["3.14", 3.14], ["-1000", -1000]]
+)
 def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
     actual = jptext.to_numeric(argument)
     assert actual == expected
