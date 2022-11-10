@@ -60,6 +60,7 @@ def to_numeric(x: str) -> Union[float, int]:
                 "壱": "1",
                 "弐": "2",
                 "参": "3",
+                "零": "0",
             }
         )
     ).replace(",", "")
