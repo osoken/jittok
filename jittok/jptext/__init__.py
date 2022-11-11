@@ -64,12 +64,12 @@ def to_numeric(x: str) -> Union[float, int]:
             }
         )
     ).replace(",", "")
-    m = re.match(r"^(?P<minus>-)?((?P<千>[0-9]*)千)?((?P<百>[0-9]*)百)?((?P<十>[0-9]*)十)?((?P<一>[0-9]*))?$", x_)
+    m = re.match(r"^(?P<minus>-)?((?P<千>[0-9.]*)千)?((?P<百>[0-9.]*)百)?((?P<十>[0-9.]*)十)?((?P<一>[0-9.]*))?$", x_)
     if m is not None:
         return (-1 if m["minus"] is not None else 1) * (
-            (0 if m["千"] is None else (1 if len(m["千"]) == 0 else int(m["千"]))) * 1000
-            + (0 if m["百"] is None else (1 if len(m["百"]) == 0 else int(m["百"]))) * 100
-            + (0 if m["十"] is None else (1 if len(m["十"]) == 0 else int(m["十"]))) * 10
-            + (0 if m["一"] is None or len(m["一"]) == 0 else int(m["一"]))
+            (0 if m["千"] is None else (1 if len(m["千"]) == 0 else float(m["千"]))) * 1000
+            + (0 if m["百"] is None else (1 if len(m["百"]) == 0 else float(m["百"]))) * 100
+            + (0 if m["十"] is None else (1 if len(m["十"]) == 0 else float(m["十"]))) * 10
+            + (0 if m["一"] is None or len(m["一"]) == 0 else float(m["一"]))
         )
     return float(x_)
