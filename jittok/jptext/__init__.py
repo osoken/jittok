@@ -47,6 +47,16 @@ def to_numeric(x: str) -> Union[float, int]:
     x_ = x.translate(
         str.maketrans(
             {
+                "１": "1",
+                "２": "2",
+                "３": "3",
+                "４": "4",
+                "５": "5",
+                "６": "6",
+                "７": "7",
+                "８": "8",
+                "９": "9",
+                "０": "0",
                 "一": "1",
                 "二": "2",
                 "三": "3",
@@ -64,12 +74,25 @@ def to_numeric(x: str) -> Union[float, int]:
             }
         )
     ).replace(",", "")
-    m = re.match(r"^(?P<minus>-)?((?P<千>[0-9.]*)千)?((?P<百>[0-9.]*)百)?((?P<十>[0-9.]*)十)?((?P<一>[0-9.]*))?$", x_)
+    m = re.match(
+        r"(?P<minus>-)?"
+        r"(?:(?P<万>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?万)?"
+        r"(?P<一>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?",
+        x_,
+    )
+    return (-1 if m["minus"] is not None else 1) * (
+        (_parse_sen_digits(m["万"]) if m["万"] is not None else 0) * 10000
+        + (_parse_sen_digits(m["一"]) if m["一"] is not None else 0)
+    )
+
+
+def _parse_sen_digits(x: str) -> Union[float, int]:
+    m = re.match(r"^((?P<千>[0-9.]*)千)?((?P<百>[0-9.]*)百)?((?P<十>[0-9.]*)十)?((?P<一>[0-9.]*))?$", x)
     if m is not None:
-        return (-1 if m["minus"] is not None else 1) * (
+        return (
             (0 if m["千"] is None else (1 if len(m["千"]) == 0 else float(m["千"]))) * 1000
             + (0 if m["百"] is None else (1 if len(m["百"]) == 0 else float(m["百"]))) * 100
             + (0 if m["十"] is None else (1 if len(m["十"]) == 0 else float(m["十"]))) * 10
             + (0 if m["一"] is None or len(m["一"]) == 0 else float(m["一"]))
         )
-    return float(x_)
+    return 0
