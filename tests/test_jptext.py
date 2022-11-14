@@ -106,6 +106,7 @@ def test_decode(original_codec: str) -> None:
         ("一万", 10000),
         ("2.3万3十", 23030),
         ("3.2億", 320000000),
+        ("六十六兆二千億", 66200000000000),
     ],
 )
 def test_to_numeric(argument: str, expected: Union[float, int]) -> None:

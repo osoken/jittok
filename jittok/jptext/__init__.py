@@ -76,13 +76,15 @@ def to_numeric(x: str) -> Union[float, int]:
     ).replace(",", "")
     m = re.match(
         r"(?P<minus>-)?"
+        r"(?:(?P<兆>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?兆)?"
         r"(?:(?P<億>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?億)?"
         r"(?:(?P<万>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?万)?"
         r"(?P<一>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?",
         x_,
     )
     return (-1 if m["minus"] is not None else 1) * (
-        (_parse_sen_digits(m["億"]) if m["億"] is not None else 0) * 100000000
+        (_parse_sen_digits(m["兆"]) if m["兆"] is not None else 0) * 1000000000000
+        + (_parse_sen_digits(m["億"]) if m["億"] is not None else 0) * 100000000
         + (_parse_sen_digits(m["万"]) if m["万"] is not None else 0) * 10000
         + (_parse_sen_digits(m["一"]) if m["一"] is not None else 0)
     )
