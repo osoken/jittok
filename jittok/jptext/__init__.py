@@ -43,6 +43,17 @@ def decode(x: bytes) -> str:
     return x.decode(guess_encoding(x))
 
 
+numeric_string_regex = re.compile(
+    r"(?P<minus>-)?"
+    r"(?:(?P<兆>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?兆)?"
+    r"(?:(?P<億>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?億)?"
+    r"(?:(?P<万>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?万)?"
+    r"(?P<一>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?"
+)
+
+four_digits_string_regex = re.compile(r"^((?P<千>[0-9.]*)千)?((?P<百>[0-9.]*)百)?((?P<十>[0-9.]*)十)?((?P<一>[0-9.]*))?$")
+
+
 def to_numeric(x: str) -> Union[float, int]:
     x_ = x.translate(
         str.maketrans(
@@ -74,14 +85,7 @@ def to_numeric(x: str) -> Union[float, int]:
             }
         )
     ).replace(",", "")
-    m = re.match(
-        r"(?P<minus>-)?"
-        r"(?:(?P<兆>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?兆)?"
-        r"(?:(?P<億>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?億)?"
-        r"(?:(?P<万>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?万)?"
-        r"(?P<一>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?",
-        x_,
-    )
+    m = numeric_string_regex.match(x_)
     return (-1 if m["minus"] is not None else 1) * (
         (_parse_sen_digits(m["兆"]) if m["兆"] is not None else 0) * 1000000000000
         + (_parse_sen_digits(m["億"]) if m["億"] is not None else 0) * 100000000
@@ -91,7 +95,7 @@ def to_numeric(x: str) -> Union[float, int]:
 
 
 def _parse_sen_digits(x: str) -> Union[float, int]:
-    m = re.match(r"^((?P<千>[0-9.]*)千)?((?P<百>[0-9.]*)百)?((?P<十>[0-9.]*)十)?((?P<一>[0-9.]*))?$", x)
+    m = four_digits_string_regex.match(x)
     if m is not None:
         return (
             (0 if m["千"] is None else (1 if len(m["千"]) == 0 else float(m["千"]))) * 1000
