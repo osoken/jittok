@@ -86,11 +86,13 @@ def to_numeric(x: str) -> Union[float, int]:
         )
     ).replace(",", "")
     m = numeric_string_regex.match(x_)
-    return (-1 if m["minus"] is not None else 1) * (
-        (_parse_sen_digits(m["兆"]) if m["兆"] is not None else 0) * 1000000000000
-        + (_parse_sen_digits(m["億"]) if m["億"] is not None else 0) * 100000000
-        + (_parse_sen_digits(m["万"]) if m["万"] is not None else 0) * 10000
-        + (_parse_sen_digits(m["一"]) if m["一"] is not None else 0)
+    return (-1 if m["minus"] is not None else 1) * sum(
+        (
+            (
+                (_parse_sen_digits(m[k]) if m[k] is not None else 0) * (10000**i)
+                for i, k in enumerate(["一", "万", "億", "兆"])
+            )
+        )
     )
 
 
