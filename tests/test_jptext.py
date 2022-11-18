@@ -126,3 +126,9 @@ def test_decode(original_codec: str) -> None:
 def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
     actual = jptext.to_numeric(argument)
     assert actual - expected == 0.0
+
+
+@pytest.mark.parametrize(["argument", "exception"], [["", ValueError], ["invalid", ValueError], ["1.2.3", ValueError]])
+def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
+    with pytest.raises(exception):
+        _ = jptext.to_numeric(argument)

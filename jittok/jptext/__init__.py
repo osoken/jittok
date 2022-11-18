@@ -1,5 +1,5 @@
-import re
 import math
+import re
 from typing import Optional, Pattern, Union
 
 import regex
@@ -105,8 +105,12 @@ trans_map = str.maketrans(
 
 
 def to_numeric(x: str) -> Union[float, int]:
+    if len(x) == 0:
+        raise ValueError(f"ValueError: invalid literal: {x}")
     x_ = x.translate(trans_map).replace(",", "")
     m = numeric_string_regex.match(x_)
+    if m is None or len(m[0]) == 0:
+        raise ValueError(f"ValueError: invalid literal: {x}")
     return (-1 if m["minus"] is not None else 1) * sum(
         (
             (
