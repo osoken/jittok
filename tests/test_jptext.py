@@ -125,5 +125,4 @@ def test_decode(original_codec: str) -> None:
 )
 def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
     actual = jptext.to_numeric(argument)
-    print(actual - expected)
     assert actual - expected == 0.0
