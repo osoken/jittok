@@ -128,7 +128,9 @@ def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
     assert actual - expected == 0.0
 
 
-@pytest.mark.parametrize(["argument", "exception"], [["", ValueError], ["invalid", ValueError], ["1.2.3", ValueError]])
+@pytest.mark.parametrize(
+    ["argument", "exception"], [["", ValueError], ["invalid", ValueError], ["1.2.3", ValueError], [[], TypeError]]
+)
 def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
     with pytest.raises(exception):
         _ = jptext.to_numeric(argument)

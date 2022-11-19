@@ -105,6 +105,8 @@ trans_map = str.maketrans(
 
 
 def to_numeric(x: str) -> Union[float, int]:
+    if not isinstance(x, str):
+        raise TypeError(f"to_numeric() argument must be a string, not '{type(x)}'")
     if len(x) == 0:
         raise ValueError(f"ValueError: invalid literal: {x}")
     x_ = x.translate(trans_map).replace(",", "")
