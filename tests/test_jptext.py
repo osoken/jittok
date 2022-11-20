@@ -131,7 +131,8 @@ def test_to_numeric(argument: Union[str, bytes], expected: Union[float, int]) ->
 
 
 @pytest.mark.parametrize(
-    ["argument", "exception"], [["", ValueError], ["invalid", ValueError], ["1.2.3", ValueError], [[], TypeError]]
+    ["argument", "exception"],
+    [["", ValueError], ["invalid", ValueError], ["1.2.3", ValueError], [[], TypeError], ["十日", ValueError]],
 )
 def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
     with pytest.raises(exception):
