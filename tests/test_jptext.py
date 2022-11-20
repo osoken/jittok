@@ -121,9 +121,10 @@ def test_decode(original_codec: str) -> None:
         ("13那由他", 13000000000000000000000000000000000000000000000000000000000000),
         ("14不可思議", 140000000000000000000000000000000000000000000000000000000000000000),
         ("15無量大数", 1500000000000000000000000000000000000000000000000000000000000000000000),
+        ("1京2858兆0519億6763万3865", 12858051967633865),
     ],
 )
-def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
+def test_to_numeric(argument: Union[str, bytes], expected: Union[float, int]) -> None:
     actual = jptext.to_numeric(argument)
     assert actual - expected == 0.0
 
