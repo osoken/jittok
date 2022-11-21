@@ -139,6 +139,7 @@ def test_to_numeric(argument: Union[str, bytes], expected: Union[float, int]) ->
         [[], TypeError],
         ["十日", ValueError],
         ["8,000円", ValueError],
+        ["二千三千", ValueError],
     ],
 )
 def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
