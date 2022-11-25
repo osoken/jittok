@@ -1,5 +1,6 @@
 import math
 import re
+import unicodedata
 from typing import Optional, Pattern, Union
 
 import regex
@@ -164,4 +165,4 @@ def _parse_sen_digits(x: str) -> Union[float, int]:
 
 
 def normalize(x: str) -> str:
-    return x.replace("　", " ")
+    return unicodedata.normalize("NFKC", x).replace("　", " ")
