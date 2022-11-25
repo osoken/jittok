@@ -161,3 +161,7 @@ def _parse_sen_digits(x: str) -> Union[float, int]:
             return int(x)
         return x
     return 0
+
+
+def normalize(x: str) -> str:
+    return x.replace("　", " ")

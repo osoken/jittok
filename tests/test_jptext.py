@@ -147,3 +147,14 @@ def test_to_numeric(argument: Union[str, bytes], expected: Union[float, int]) ->
 def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
     with pytest.raises(exception):
         _ = jptext.to_numeric(argument)
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
+        ["　", " "],
+    ],
+)
+def test_normalize_default(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw)
+    assert actual == expected
