@@ -164,5 +164,10 @@ def _parse_sen_digits(x: str) -> Union[float, int]:
     return 0
 
 
+normalize_trans_map = str.maketrans(
+    {"˗": "-", "֊": "-", "‐": "-", "‑": "-", "‒": "-", "–": "-", "⁃": "-", "⁻": "-", "₋": "-", "−": "-", "　": " "}
+)
+
+
 def normalize(x: str) -> str:
-    return unicodedata.normalize("NFKC", x).replace("　", " ")
+    return unicodedata.normalize("NFKC", x).translate(normalize_trans_map)

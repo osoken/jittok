@@ -151,7 +151,14 @@ def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
 
 @pytest.mark.parametrize(
     ["raw", "expected"],
-    [["　", " "], ["\u30b9\u3099", "ズ"]],
+    [
+        ["　", " "],
+        ["\u30b9\u3099", "ズ"],
+        ["ﾊﾝｶｸｶﾅ", "ハンカクカナ"],
+        ["全角記号！？＠＃", "全角記号!?@#"],
+        ["全角記号例外「・」", "全角記号例外「・」"],
+        ["いろんなハイフン˗֊‐‑‒–⁃⁻₋−", "いろんなハイフン----------"],
+    ],
 )
 def test_normalize_default(raw: str, expected: str) -> None:
     actual = jptext.normalize(raw)
