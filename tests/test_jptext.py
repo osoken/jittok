@@ -161,6 +161,7 @@ def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
         ["Ｈａｌｆ　Ｗｉｄｔｈ", "Half Width"],
         ["~〜", "~〜"],
         ["１月", "1月"],
+        ["\u2fa6", "金"],
     ],
 )
 def test_normalize_default(raw: str, expected: str) -> None:
