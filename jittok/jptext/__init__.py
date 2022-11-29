@@ -1,5 +1,6 @@
 import math
 import re
+import unicodedata
 from typing import Optional, Pattern, Union
 
 import regex
@@ -161,3 +162,27 @@ def _parse_sen_digits(x: str) -> Union[float, int]:
             return int(x)
         return x
     return 0
+
+
+normalize_trans_map = str.maketrans(
+    {
+        "˗": "-",
+        "֊": "-",
+        "‐": "-",
+        "‑": "-",
+        "‒": "-",
+        "–": "-",
+        "⁃": "-",
+        "⁻": "-",
+        "₋": "-",
+        "−": "-",
+        "　": " ",
+        "\u200b": " ",
+        "\ufeff": " ",
+        "\t": " ",
+    }
+)
+
+
+def normalize(x: str) -> str:
+    return unicodedata.normalize("NFKC", x).translate(normalize_trans_map)

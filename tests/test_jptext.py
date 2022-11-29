@@ -147,3 +147,23 @@ def test_to_numeric(argument: Union[str, bytes], expected: Union[float, int]) ->
 def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
     with pytest.raises(exception):
         _ = jptext.to_numeric(argument)
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
+        ["\u0020\u00a0\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u200a\u200b\u3000\uFEFF\u0009", "              "],
+        ["\u30b9\u3099", "ズ"],
+        ["ｾﾞﾝｶｸｶﾅ", "ゼンカクカナ"],
+        ["！？＠＃", "!?@#"],
+        ["「・」", "「・」"],
+        ["˗֊‐‑‒–⁃⁻₋−", "----------"],
+        ["Ｈａｌｆ　Ｗｉｄｔｈ", "Half Width"],
+        ["~〜", "~〜"],
+        ["１月", "1月"],
+        ["\u2fa6", "金"],
+    ],
+)
+def test_normalize_default(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw)
+    assert actual == expected
