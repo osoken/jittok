@@ -162,6 +162,7 @@ def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
         ["~〜", "~〜"],
         ["１月", "1月"],
         ["\u2fa6", "金"],
+        ["単語（たんご）", "単語 (単語)"],
     ],
 )
 def test_normalize_default(raw: str, expected: str) -> None:
