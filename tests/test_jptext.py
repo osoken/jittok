@@ -164,6 +164,7 @@ def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
         ["\u2fa6", "金"],
         ["単語（たんご）", "単語 (単語)"],
         ["(x) (y)", "(x) (y)"],
+        ["(x)  (y)", "(x)  (y)"],
     ],
 )
 def test_normalize_default(raw: str, expected: str) -> None:
