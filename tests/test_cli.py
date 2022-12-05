@@ -37,3 +37,5 @@ def test_main_jptext(mocker: MockerFixture):
     parser.parse_args.assert_called_once_with()
     parser.print_help.assert_not_called()
     jittok.cli.main.assert_called_once_with(args)
+    parser.add_subparsers.assert_called_once_with("subcommand")
+    assert actual == parser
