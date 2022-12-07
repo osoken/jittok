@@ -9,7 +9,7 @@ def test_setup_argument_parser(mocker: MockerFixture):
     actual = cli.setup_argument_parser()
     parser = ArgumentParser.return_value
     jptext.cli.setup_argument_subparser.assert_called_once_with(parser.add_subparsers.return_value)
-    parser.add_subparsers.assert_called_once_with()
+    parser.add_subparsers.assert_called_once_with(dest="module_name")
     assert actual == parser
 
 
