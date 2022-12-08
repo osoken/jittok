@@ -23,3 +23,17 @@ def test_main_print_help(mocker: MockerFixture):
     setup_argument_parser.assert_called_once_with()
     parser.parse_args.assert_called_once_with()
     parser.print_help.assert_called_once_with()
+
+
+def test_main_jptext(mocker: MockerFixture):
+    setup_argument_parser = mocker.patch("jittok.cli.setup_argument_parser")
+    jittok = mocker.patch("jittok.cli.jptext")
+    parser = setup_argument_parser.return_value
+    args = parser.parse_args.return_value
+    args.subcommand = "jptext"
+    actual = cli.main()
+    assert actual is None
+    setup_argument_parser.assert_called_once_with()
+    parser.parse_args.assert_called_once_with()
+    parser.print_help.assert_not_called()
+    jittok.cli.main.assert_called_once_with(args)

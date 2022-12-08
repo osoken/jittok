@@ -13,4 +13,7 @@ def setup_argument_parser() -> ArgumentParser:
 def main() -> None:
     parser = setup_argument_parser()
     args = parser.parse_args()
-    parser.print_help()
+    if args.subcommand == "jptext":
+        jptext.cli.main(args)
+    else:
+        parser.print_help()
