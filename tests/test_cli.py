@@ -13,7 +13,7 @@ def test_setup_argument_parser(mocker: MockerFixture):
     assert actual == parser
 
 
-def test_main(mocker: MockerFixture):
+def test_main_print_help(mocker: MockerFixture):
     setup_argument_parser = mocker.patch("jittok.cli.setup_argument_parser")
     parser = setup_argument_parser.return_value
     args = parser.parse_args.return_value

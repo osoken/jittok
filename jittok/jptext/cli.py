@@ -1,5 +1,5 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, _SubParsersAction
 
 
-def setup_argument_subparser(subparser: ArgumentParser) -> None:
+def setup_argument_subparser(subparsers: _SubParsersAction) -> None:
     ...
