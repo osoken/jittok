@@ -1,11 +1,17 @@
 import math
 import re
+import sys
 import unicodedata
 from typing import Optional, Union
 
 import regex
 
 from .exceptions import UnknownEncodingError
+
+if sys.version_info < (3, 9):
+    PatternT = Union[re.Pattern, regex.regex.Pattern]
+else:
+    PatternT = Union[re.Pattern[str], regex.regex.Pattern[str]]
 
 codec_list = [
     "utf_8",
@@ -21,7 +27,7 @@ codec_list = [
 ]
 
 
-def guess_encoding(x: bytes, hint: Optional[Union[str, re.Pattern[str], regex.regex.Pattern[str]]] = None) -> str:
+def guess_encoding(x: bytes, hint: Optional[Union[str, PatternT]] = None) -> str:
     if hint is None:
         return guess_encoding(
             x,
