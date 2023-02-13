@@ -9,7 +9,9 @@ import regex
 from .exceptions import UnknownEncodingError
 
 if sys.version_info < (3, 9):
-    PatternT = Union[re.Pattern, regex.regex.Pattern]
+    from typing import Pattern
+
+    PatternT = Union[Pattern[str], regex.regex.Pattern]
 else:
     PatternT = Union[re.Pattern[str], regex.regex.Pattern[str]]
 
