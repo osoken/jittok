@@ -20,6 +20,6 @@ setup(
     packages=[__package_name__, f"{__package_name__}.jptext"],
     install_requires=["regex"],
     extras_require={
-        "dev": ["flake8", "pytest", "black", "mypy", "tox", "isort"],
+        "dev": ["flake8", "pytest", "black", "mypy", "tox", "isort", "types-regex"],
     },
 )

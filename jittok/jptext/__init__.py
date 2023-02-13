@@ -1,11 +1,19 @@
 import math
 import re
+import sys
 import unicodedata
-from typing import Optional, Pattern, Union
+from typing import Optional, Union
 
 import regex
 
 from .exceptions import UnknownEncodingError
+
+if sys.version_info < (3, 9):
+    from typing import Pattern
+
+    PatternT = Union[Pattern[str], regex.regex.Pattern]
+else:
+    PatternT = Union[re.Pattern[str], regex.regex.Pattern[str]]
 
 codec_list = [
     "utf_8",
@@ -21,7 +29,7 @@ codec_list = [
 ]
 
 
-def guess_encoding(x: bytes, hint: Optional[Union[str, Pattern[str]]] = None) -> str:
+def guess_encoding(x: bytes, hint: Optional[Union[str, PatternT]] = None) -> str:
     if hint is None:
         return guess_encoding(
             x,
@@ -152,15 +160,15 @@ def to_numeric(x: str) -> Union[float, int]:
 def _parse_sen_digits(x: str) -> Union[float, int]:
     m = four_digits_string_regex.match(x)
     if m is not None:
-        x = (
+        s = (
             (0 if m["千"] is None else (1 if len(m["千"]) == 0 else float(m["千"]))) * 1000
             + (0 if m["百"] is None else (1 if len(m["百"]) == 0 else float(m["百"]))) * 100
             + (0 if m["十"] is None else (1 if len(m["十"]) == 0 else float(m["十"]))) * 10
             + (0 if m["一"] is None or len(m["一"]) == 0 else float(m["一"]))
         )
-        if x == math.floor(x):
-            return int(x)
-        return x
+        if s == math.floor(s):
+            return int(s)
+        return s
     return 0
 
 
@@ -191,7 +199,12 @@ parentheses_left = re.compile(r"([^\s(])\(")
 parentheses_right = re.compile(r"\)([^\s)])")
 
 
-def normalize(x: str) -> str:
-    return parentheses_right.sub(
+def normalize(x: str, newline_to_space: bool = False, remove_multiple_spaces: bool = False) -> str:
+    normalized_string = parentheses_right.sub(
         r") \1", parentheses_left.sub(r"\1 (", unicodedata.normalize("NFKC", x).translate(normalize_trans_map))
     )
+    if newline_to_space:
+        normalized_string = re.sub(r"[\n\r]", " ", normalized_string)
+    if remove_multiple_spaces:
+        return re.sub(r" +", " ", normalized_string)
+    return normalized_string

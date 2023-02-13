@@ -125,27 +125,35 @@ def test_decode(original_codec: str) -> None:
         ("一1１", 111),
     ],
 )
-def test_to_numeric(argument: Union[str, bytes], expected: Union[float, int]) -> None:
+def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
     actual = jptext.to_numeric(argument)
     assert actual - expected == 0.0
 
 
 @pytest.mark.parametrize(
-    ["argument", "exception"],
+    ["argument"],
     [
-        ["", ValueError],
-        ["invalid", ValueError],
-        ["1.2.3", ValueError],
-        [[], TypeError],
-        ["十日", ValueError],
-        ["8,000円", ValueError],
-        ["二千三千", ValueError],
-        ["二千万三千億", ValueError],
-        ["億万", ValueError],
+        [""],
+        ["invalid"],
+        ["1.2.3"],
+        ["十日"],
+        ["8,000円"],
+        ["二千三千"],
+        ["二千万三千億"],
+        ["億万"],
     ],
 )
-def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
-    with pytest.raises(exception):
+def test_to_numeric_raises_value_error(argument: str) -> None:
+    with pytest.raises(ValueError):
+        _ = jptext.to_numeric(argument)
+
+
+@pytest.mark.parametrize(
+    ["argument"],
+    [[[]], [123]],
+)
+def test_to_numeric_raises_type_error(argument: str) -> None:
+    with pytest.raises(TypeError):
         _ = jptext.to_numeric(argument)
 
 
@@ -170,4 +178,41 @@ def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
 )
 def test_normalize_default(raw: str, expected: str) -> None:
     actual = jptext.normalize(raw)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
+        [" \t \n", "    "],
+        ["\r\n", "  "],
+        ["already normalized string text", "already normalized string text"],
+    ],
+)
+def test_normalize_newline_to_space(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw, newline_to_space=True)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
+        ["\u0020\u00a0\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u200a\u200b\u3000\uFEFF\u0009", " "],
+        [" \t \n", " \n"],
+        ["already normalized string text", "already normalized string text"],
+    ],
+)
+def test_normalize_remove_multiple_spaces(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw, remove_multiple_spaces=True)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
+        [" \t \n", " "],
+    ],
+)
+def test_normalize_newline_to_space_with_remove_multiple_spaces(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw, newline_to_space=True, remove_multiple_spaces=True)
     assert actual == expected
