@@ -179,3 +179,40 @@ def test_to_numeric_raises_type_error(argument: str) -> None:
 def test_normalize_default(raw: str, expected: str) -> None:
     actual = jptext.normalize(raw)
     assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
+        [" \t \n", "    "],
+        ["\r\n", "  "],
+        ["already normalized string text", "already normalized string text"],
+    ],
+)
+def test_normalize_newline_to_space(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw, newline_to_space=True)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
+        ["\u0020\u00a0\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u200a\u200b\u3000\uFEFF\u0009", " "],
+        [" \t \n", " \n"],
+        ["already normalized string text", "already normalized string text"],
+    ],
+)
+def test_normalize_remove_multiple_spaces(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw, remove_multiple_spaces=True)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
+        [" \t \n", " "],
+    ],
+)
+def test_normalize_newline_to_space_with_remove_multiple_spaces(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw, newline_to_space=True, remove_multiple_spaces=True)
+    assert actual == expected
