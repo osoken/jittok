@@ -125,27 +125,35 @@ def test_decode(original_codec: str) -> None:
         ("一1１", 111),
     ],
 )
-def test_to_numeric(argument: Union[str, bytes], expected: Union[float, int]) -> None:
+def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
     actual = jptext.to_numeric(argument)
     assert actual - expected == 0.0
 
 
 @pytest.mark.parametrize(
-    ["argument", "exception"],
+    ["argument"],
     [
-        ["", ValueError],
-        ["invalid", ValueError],
-        ["1.2.3", ValueError],
-        [[], TypeError],
-        ["十日", ValueError],
-        ["8,000円", ValueError],
-        ["二千三千", ValueError],
-        ["二千万三千億", ValueError],
-        ["億万", ValueError],
+        [""],
+        ["invalid"],
+        ["1.2.3"],
+        ["十日"],
+        ["8,000円"],
+        ["二千三千"],
+        ["二千万三千億"],
+        ["億万"],
     ],
 )
-def test_to_numeric_error_cases(argument: str, exception: Exception) -> None:
-    with pytest.raises(exception):
+def test_to_numeric_raises_value_error(argument: str) -> None:
+    with pytest.raises(ValueError):
+        _ = jptext.to_numeric(argument)
+
+
+@pytest.mark.parametrize(
+    ["argument"],
+    [[[]], [123]],
+)
+def test_to_numeric_raises_type_error(argument: str) -> None:
+    with pytest.raises(TypeError):
         _ = jptext.to_numeric(argument)
 
 
