@@ -34,7 +34,8 @@ def guess_encoding(x: bytes, hint: Optional[Union[str, PatternT]] = None) -> str
         return guess_encoding(
             x,
             regex.compile(
-                r'[\p{Script=Han}\u3041-\u309F\u30A1-\u30FF\uFF01-\uFF0F\uFF1A-\uFF20\uFF3B-\uFF40\uFF5B-\uFF65\u3000-\u303F]+'
+                r'[\p{Script=Han}\u3041-\u309F\u30A1-\u30FF\uFF01-\uFF0F\uFF1A-\uFF20'
+                r'\uFF3B-\uFF40\uFF5B-\uFF65\u3000-\u303F]+'
             ),
         )
     if isinstance(hint, str):

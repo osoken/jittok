@@ -1,5 +1,3 @@
-from typing import Callable
-
 from jittok import Callable as jCallable
 
 
