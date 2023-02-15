@@ -17,6 +17,7 @@ setup(
     description=__description__,
     long_description=__long_description__,
     long_description_content_type="text/markdown",
+    package_data={__package_name__: ["py.typed"]},
     packages=[__package_name__, f"{__package_name__}.jptext"],
     install_requires=["regex"],
     extras_require={
