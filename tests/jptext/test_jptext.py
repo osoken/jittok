@@ -86,6 +86,9 @@ def test_decode(original_codec: str) -> None:
         ["3.14", 3.14],
         ["-1000", -1000],
         ["-3,321,123,000", -3321123000],
+        ["1,423千", 1423000],
+        ["1,423千10,320十", 1526200],
+        ["1,234.567", 1234.567],
         ["-12.322", -12.322],
         ["一", 1],
         ["二", 2],
@@ -141,6 +144,9 @@ def test_to_numeric(argument: str, expected: Union[float, int]) -> None:
         ["二千三千"],
         ["二千万三千億"],
         ["億万"],
+        ["1,2,3"],
+        ["123,23"],
+        ["1111,324"],
     ],
 )
 def test_to_numeric_raises_value_error(argument: str) -> None:

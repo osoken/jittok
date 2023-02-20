@@ -54,11 +54,22 @@ def decode(x: bytes) -> str:
     return x.decode(guess_encoding(x))
 
 
+_basic_number_string = r"(?:(?:(?:[0-9]{0,3})(?:,[0-9]{3})+)|(?:[0-9]*))(?:\.[0-9]+)?"
+_four_digits_string_regex_str = (
+    fr"^((?P<千>{_basic_number_string})千)?"
+    fr"((?P<百>{_basic_number_string})百)?"
+    fr"((?P<十>{_basic_number_string})十)?"
+    fr"((?P<一>{_basic_number_string}))?$"
+)
+
 numeric_string_regex = re.compile(
     r"^(?P<minus>-)?"
     + "".join(
         (
-            f"(?:(?P<{dig}>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?{dig})?"
+            fr"(?:(?P<{dig}>({_basic_number_string}千)?"
+            fr"({_basic_number_string}百)?"
+            fr"({_basic_number_string}十)?"
+            fr"({_basic_number_string})?)?{dig})?"
             for dig in [
                 "無量大数",
                 "不可思議",
@@ -80,10 +91,15 @@ numeric_string_regex = re.compile(
             ]
         )
     )
-    + r"(?P<一>([0-9.]*千)?([0-9.]*百)?([0-9.]*十)?([0-9.]*)?)?$",
+    + (
+        fr"(?P<一>({_basic_number_string}千)?"
+        fr"({_basic_number_string}百)?"
+        fr"({_basic_number_string}十)?"
+        fr"({_basic_number_string})?)?$"
+    )
 )
 
-four_digits_string_regex = re.compile(r"^((?P<千>[0-9.]*)千)?((?P<百>[0-9.]*)百)?((?P<十>[0-9.]*)十)?((?P<一>[0-9.]*))?$")
+_four_digits_string_regex = re.compile(_four_digits_string_regex_str)
 trans_map = str.maketrans(
     {
         "１": "1",
@@ -119,7 +135,7 @@ def to_numeric(x: str) -> Union[float, int]:
         raise TypeError(f"to_numeric() argument must be a string, not '{type(x)}'")
     if len(x) == 0:
         raise ValueError(f"invalid literal: {x}")
-    x_ = x.translate(trans_map).replace(",", "")
+    x_ = x.translate(trans_map)
     m = numeric_string_regex.match(x_)
     if m is None or len(m[0]) == 0:
         raise ValueError(f"invalid literal: {x}")
@@ -159,13 +175,13 @@ def to_numeric(x: str) -> Union[float, int]:
 
 
 def _parse_sen_digits(x: str) -> Union[float, int]:
-    m = four_digits_string_regex.match(x)
+    m = _four_digits_string_regex.match(x)
     if m is not None:
         s = (
-            (0 if m["千"] is None else (1 if len(m["千"]) == 0 else float(m["千"]))) * 1000
-            + (0 if m["百"] is None else (1 if len(m["百"]) == 0 else float(m["百"]))) * 100
-            + (0 if m["十"] is None else (1 if len(m["十"]) == 0 else float(m["十"]))) * 10
-            + (0 if m["一"] is None or len(m["一"]) == 0 else float(m["一"]))
+            (0 if m["千"] is None else (1 if len(m["千"]) == 0 else float(m["千"].replace(",", "")))) * 1000
+            + (0 if m["百"] is None else (1 if len(m["百"]) == 0 else float(m["百"].replace(",", "")))) * 100
+            + (0 if m["十"] is None else (1 if len(m["十"]) == 0 else float(m["十"].replace(",", "")))) * 10
+            + (0 if m["一"] is None or len(m["一"]) == 0 else float(m["一"].replace(",", "")))
         )
         if s == math.floor(s):
             return int(s)
