@@ -1,11 +1,18 @@
 import os
-
+import sys
 from setuptools import setup
 
 from jittok import __author__, __description__, __email__, __package_name__, __version__
 
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.md"), "r") as fin:
     __long_description__ = fin.read()
+
+install_requires = ["regex"]
+dev_extras_require = ["flake8", "pytest", "black", "mypy", "tox", "isort", "types-regex", "pytest-mock"]
+
+if sys.version_info < (3, 7):
+    install_requires += ["dataclasses"]
+    dev_extras_require += ["types-dataclasses"]
 
 setup(
     name=__package_name__,
@@ -19,8 +26,8 @@ setup(
     long_description_content_type="text/markdown",
     package_data={__package_name__: ["py.typed"]},
     packages=[__package_name__, f"{__package_name__}.jptext"],
-    install_requires=["regex"],
+    install_requires=install_requires,
     extras_require={
-        "dev": ["flake8", "pytest", "black", "mypy", "tox", "isort", "types-regex", "pytest-mock"],
+        "dev": dev_extras_require,
     },
 )
