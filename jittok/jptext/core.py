@@ -34,8 +34,8 @@ def guess_encoding(x: bytes, hint: Optional[Union[str, PatternT]] = None) -> str
         return guess_encoding(
             x,
             regex.compile(
-                r'[\p{Script=Han}\u3041-\u309F\u30A1-\u30FF\uFF01-\uFF0F\uFF1A-\uFF20'
-                r'\uFF3B-\uFF40\uFF5B-\uFF65\u3000-\u303F]+'
+                r"[\p{Script=Han}\u3041-\u309F\u30A1-\u30FF\uFF01-\uFF0F\uFF1A-\uFF20"
+                r"\uFF3B-\uFF40\uFF5B-\uFF65\u3000-\u303F]+"
             ),
         )
     if isinstance(hint, str):
@@ -56,20 +56,20 @@ def decode(x: bytes) -> str:
 
 _basic_number_string = r"(?:(?:(?:[0-9]{0,3})(?:,[0-9]{3})+)|(?:[0-9]*))(?:\.[0-9]+)?"
 _four_digits_string_regex_str = (
-    fr"^((?P<千>{_basic_number_string})千)?"
-    fr"((?P<百>{_basic_number_string})百)?"
-    fr"((?P<十>{_basic_number_string})十)?"
-    fr"((?P<一>{_basic_number_string}))?$"
+    rf"^((?P<千>{_basic_number_string})千)?"
+    rf"((?P<百>{_basic_number_string})百)?"
+    rf"((?P<十>{_basic_number_string})十)?"
+    rf"((?P<一>{_basic_number_string}))?$"
 )
 
 numeric_string_regex = re.compile(
     r"^(?P<minus>-)?"
     + "".join(
         (
-            fr"(?:(?P<{dig}>({_basic_number_string}千)?"
-            fr"({_basic_number_string}百)?"
-            fr"({_basic_number_string}十)?"
-            fr"({_basic_number_string})?)?{dig})?"
+            rf"(?:(?P<{dig}>({_basic_number_string}千)?"
+            rf"({_basic_number_string}百)?"
+            rf"({_basic_number_string}十)?"
+            rf"({_basic_number_string})?)?{dig})?"
             for dig in [
                 "無量大数",
                 "不可思議",
@@ -92,10 +92,10 @@ numeric_string_regex = re.compile(
         )
     )
     + (
-        fr"(?P<一>({_basic_number_string}千)?"
-        fr"({_basic_number_string}百)?"
-        fr"({_basic_number_string}十)?"
-        fr"({_basic_number_string})?)?$"
+        rf"(?P<一>({_basic_number_string}千)?"
+        rf"({_basic_number_string}百)?"
+        rf"({_basic_number_string}十)?"
+        rf"({_basic_number_string})?)?$"
     )
 )
 
@@ -205,8 +205,8 @@ normalize_trans_map = str.maketrans(
         "\u200b": " ",
         "\ufeff": " ",
         "\t": " ",
-        "“": "\"",
-        "”": "\"",
+        "“": '"',
+        "”": '"',
         "‘": "'",
         "’": "'",
     }
