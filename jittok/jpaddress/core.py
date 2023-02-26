@@ -1,7 +1,9 @@
+import csv
 from dataclasses import dataclass
+from io import BufferedReader
 
 
-@dataclass
+@dataclass(eq=True, frozen=True)
 class Address:
     prefecture: str
     city: str
@@ -43,4 +45,29 @@ def zipcode_to_address(zipcode: str) -> Address:
     retval = _zipcode_to_address_map.get(zipcode.replace("-", ""))
     if retval is None:
         raise ValueError(f"Invalid zipcode: {zipcode}")
+    return retval
+
+
+def _init_address_data(readable: BufferedReader) -> dict:
+    """Initialize the zipcode to address map."""
+    retval = {}
+    zip_code_idx = 0
+    prefecture_idx = 1
+    city_idx = 2
+    town_idx = 3
+    for d in csv.reader(readable):
+        retval[d[zip_code_idx]] = Address(
+            prefecture=d[prefecture_idx],
+            city=d[city_idx],
+            town=d[town_idx],
+            prefecture_kana="",
+            city_kana="",
+            town_kana="",
+            prefecture_kanji="",
+            city_kanji="",
+            town_kanji="",
+            prefecture_romaji="",
+            city_romaji="",
+            town_romaji="",
+        )
     return retval
