@@ -7,7 +7,7 @@ from jittok import __author__, __description__, __email__, __package_name__, __v
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.md"), "r") as fin:
     __long_description__ = fin.read()
 
-install_requires = ["regex"]
+install_requires = ["regex", "pykakasi"]
 dev_extras_require = ["flake8", "pytest", "black", "mypy", "tox", "isort", "types-regex", "pytest-mock"]
 
 if sys.version_info < (3, 7):
