@@ -19,7 +19,7 @@ setup(
     long_description_content_type="text/markdown",
     package_data={__package_name__: ["py.typed"]},
     packages=[__package_name__, f"{__package_name__}.jptext"],
-    install_requires=["regex"],
+    install_requires=["regex", "pykakasi"],
     extras_require={
         "dev": ["flake8", "pytest", "black", "mypy", "tox", "isort", "types-regex", "pytest-mock"],
     },

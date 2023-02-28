@@ -222,3 +222,8 @@ def test_normalize_remove_multiple_spaces(raw: str, expected: str) -> None:
 def test_normalize_newline_to_space_with_remove_multiple_spaces(raw: str, expected: str) -> None:
     actual = jptext.normalize(raw, newline_to_space=True, remove_multiple_spaces=True)
     assert actual == expected
+
+
+def test_kanji_to_kana() -> None:
+    actual = jptext.kanji_to_kana("漢字")
+    assert actual == "カンジ"
