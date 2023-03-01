@@ -232,3 +232,11 @@ def normalize(x: str, newline_to_space: bool = False, remove_multiple_spaces: bo
 
 def kanji_to_kana(x: str) -> str:
     return "".join(d["kana"] for d in kks.convert(x))
+
+
+def kanji_to_hiragana(x: str) -> str:
+    return "".join(d["hira"] for d in kks.convert(x))
+
+
+def kanji_to_romaji(x: str) -> str:
+    return "".join(d["hepburn"] for d in kks.convert(x))

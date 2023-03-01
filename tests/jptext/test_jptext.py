@@ -224,6 +224,28 @@ def test_normalize_newline_to_space_with_remove_multiple_spaces(raw: str, expect
     assert actual == expected
 
 
-def test_kanji_to_kana() -> None:
-    actual = jptext.kanji_to_kana("漢字")
-    assert actual == "カンジ"
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [["漢字", "カンジ"], ["ひらがな", "ヒラガナ"], ["カタカナ", "カタカナ"], ["カナ漢字混じり", "カナカンジマジリ"], ["Romaji", "Romaji"]],
+)
+def test_kanji_to_kana(raw: str, expected: str) -> None:
+    actual = jptext.kanji_to_kana(raw)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [["漢字", "かんじ"], ["ひらがな", "ひらがな"], ["カタカナ", "かたかな"], ["カナ漢字混じり", "かなかんじまじり"], ["Romaji", "Romaji"]],
+)
+def test_kanji_to_hiragana(raw: str, expected: str) -> None:
+    actual = jptext.kanji_to_hiragana(raw)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [["漢字", "kanji"], ["ひらがな", "hiragana"], ["カタカナ", "katakana"], ["カナ漢字混じり", "kanakanjimajiri"], ["Romaji", "Romaji"]],
+)
+def test_kanji_to_romaji(raw: str, expected: str) -> None:
+    actual = jptext.kanji_to_romaji(raw)
+    assert actual == expected
