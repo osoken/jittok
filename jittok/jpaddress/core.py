@@ -1,8 +1,10 @@
 import csv
 from dataclasses import dataclass
 from io import BufferedReader
-from .. import jptext
+
 import pykakasi
+
+from .. import jptext
 
 kks = pykakasi.kakasi()
 
