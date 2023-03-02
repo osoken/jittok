@@ -4,6 +4,7 @@ import sys
 import unicodedata
 from typing import Optional, Union
 
+import pykakasi
 import regex
 
 from .exceptions import UnknownEncodingError
@@ -14,6 +15,8 @@ if sys.version_info < (3, 9):
     PatternT = Union[Pattern[str], regex.regex.Pattern]
 else:
     PatternT = Union[re.Pattern[str], regex.regex.Pattern[str]]
+
+kks = pykakasi.kakasi()
 
 codec_list = [
     "utf_8",
@@ -225,3 +228,15 @@ def normalize(x: str, newline_to_space: bool = False, remove_multiple_spaces: bo
     if remove_multiple_spaces:
         return re.sub(r" +", " ", normalized_string)
     return normalized_string
+
+
+def kanji_to_kana(x: str) -> str:
+    return "".join(d["kana"] for d in kks.convert(x))
+
+
+def kanji_to_hiragana(x: str) -> str:
+    return "".join(d["hira"] for d in kks.convert(x))
+
+
+def kanji_to_romaji(x: str) -> str:
+    return "".join(d["hepburn"] for d in kks.convert(x))
