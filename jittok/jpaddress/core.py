@@ -6,7 +6,7 @@ import pykakasi
 
 from .. import jptext
 
-if sys.version_info >= (3, 7):
+if sys.version_info >= (3, 9):
     from collections.abc import Iterable, Mapping
 else:
     from typing import Iterable, Mapping
