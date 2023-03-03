@@ -2,17 +2,12 @@ import csv
 import sys
 from dataclasses import dataclass
 
-import pykakasi
-
 from .. import jptext
 
 if sys.version_info >= (3, 9):
     from collections.abc import Iterable, Mapping
 else:
     from typing import Iterable, Mapping
-
-
-kks = pykakasi.kakasi()
 
 
 @dataclass(eq=True, frozen=True)
@@ -95,9 +90,6 @@ def _init_address_data(readable: Iterable[str]) -> Mapping[str, Address]:
         prefecture_kanji = jptext.normalize(d[prefecture_idx]).replace(" ", "")
         city_kanji = jptext.normalize(d[city_idx]).replace(" ", "")
         town_kanji = jptext.normalize(d[town_idx]).replace(" ", "") if d[town_idx] != "以下に掲載がない場合" else ""
-        prefecture_data = kks.convert(prefecture_kanji)
-        city_data = kks.convert(city_kanji)
-        town_data = kks.convert(town_kanji)
         a_prefecture_raw = d[a_prefecture_idx]
         a_city_raw = d[a_city_idx]
         a_town_raw = d[a_town_idx] if d[a_town_idx] != "IKANIKEISAIGANAIBAAI" else ""
@@ -105,9 +97,9 @@ def _init_address_data(readable: Iterable[str]) -> Mapping[str, Address]:
             prefecture=prefecture_kanji,
             city=city_kanji,
             town=town_kanji,
-            prefecture_kana="".join(dd["kana"] for dd in prefecture_data),
-            city_kana="".join(dd["kana"] for dd in city_data),
-            town_kana="".join(dd["kana"] for dd in town_data),
+            prefecture_kana=jptext.kanji_to_kana(prefecture_kanji),
+            city_kana=jptext.kanji_to_kana(city_kanji),
+            town_kana=jptext.kanji_to_kana(town_kanji),
             prefecture_kanji=prefecture_kanji,
             city_kanji=city_kanji,
             town_kanji=town_kanji,
