@@ -60,6 +60,27 @@ def zipcode_to_address(zipcode: str) -> Address:
     return retval
 
 
+def _tidy_romaji_name(name: str) -> str:
+    """Tidy up the romaji name.
+    >>> _tidy_romaji_name("TOKYO")
+    'Tokyo'
+    >>> _tidy_romaji_name("TOKYO TO")
+    'Tokyo-to'
+    >>> _tidy_romaji_name("TOKYO TO CHIYODA KU")
+    'Tokyo-to Chiyoda-ku'
+    >>> _tidy_romaji_name("MIYAKEJIMA MIYAKE MURA")
+    'Miyakejima Miyake-mura'
+    """
+    retval = f"{name.title()} "
+    retval = retval.replace(" To ", "-to ")
+    retval = retval.replace(" Ku ", "-ku ")
+    retval = retval.replace(" Shi ", "-shi ")
+    retval = retval.replace(" Cho ", "-cho ")
+    retval = retval.replace(" Mura ", "-mura ")
+    retval = retval.replace(" Gun ", "-gun ")
+    return retval.strip()
+
+
 def _init_address_data(readable: BufferedReader) -> dict:
     """Initialize the zipcode to address map."""
     retval = {}
@@ -67,6 +88,9 @@ def _init_address_data(readable: BufferedReader) -> dict:
     prefecture_idx = 1
     city_idx = 2
     town_idx = 3
+    a_prefecture_idx = 4
+    a_city_idx = 5
+    a_town_idx = 6
     for d in csv.reader(readable):
         prefecture_kanji = jptext.normalize(d[prefecture_idx]).replace(" ", "")
         city_kanji = jptext.normalize(d[city_idx]).replace(" ", "")
@@ -74,6 +98,9 @@ def _init_address_data(readable: BufferedReader) -> dict:
         prefecture_data = kks.convert(prefecture_kanji)
         city_data = kks.convert(city_kanji)
         town_data = kks.convert(town_kanji)
+        a_prefecture_raw = d[a_prefecture_idx]
+        a_city_raw = d[a_city_idx]
+        a_town_raw = d[a_town_idx] if d[a_town_idx] != "IKANIKEISAIGANAIBAAI" else ""
         retval[d[zip_code_idx]] = Address(
             prefecture=prefecture_kanji,
             city=city_kanji,
@@ -84,8 +111,8 @@ def _init_address_data(readable: BufferedReader) -> dict:
             prefecture_kanji=prefecture_kanji,
             city_kanji=city_kanji,
             town_kanji=town_kanji,
-            prefecture_romaji=" ".join(dd["hepburn"] for dd in prefecture_data),
-            city_romaji=" ".join(dd["hepburn"] for dd in city_data),
-            town_romaji=" ".join(dd["hepburn"] for dd in town_data),
+            prefecture_romaji=_tidy_romaji_name(a_prefecture_raw),
+            city_romaji=_tidy_romaji_name(a_city_raw),
+            town_romaji=_tidy_romaji_name(a_town_raw),
         )
     return retval
