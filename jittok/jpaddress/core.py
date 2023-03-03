@@ -1,10 +1,16 @@
 import csv
+import sys
 from dataclasses import dataclass
-from io import BufferedReader
 
 import pykakasi
 
 from .. import jptext
+
+if sys.version_info >= (3, 7):
+    from collections.abc import Iterable, Mapping
+else:
+    from typing import Iterable, Mapping
+
 
 kks = pykakasi.kakasi()
 
@@ -81,7 +87,7 @@ def _tidy_romaji_name(name: str) -> str:
     return retval.strip()
 
 
-def _init_address_data(readable: BufferedReader) -> dict:
+def _init_address_data(readable: Iterable[str]) -> Mapping[str, Address]:
     """Initialize the zipcode to address map."""
     retval = {}
     zip_code_idx = 0
