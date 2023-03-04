@@ -48,7 +48,21 @@ _zipcode_to_address_map = {
 
 
 def zipcode_to_address(zipcode: str) -> Address:
-    """Convert a zipcode to an address."""
+    """Convert a zipcode to an address.
+
+    Args:
+        zipcode (str): Zipcode.
+
+    Returns:
+        Address: Address.
+
+    Raises:
+        ValueError: Invalid zipcode.
+
+    >>> zipcode_to_address("1000001")
+    Address(prefecture='東京都', city='千代田区', town='千代田', prefecture_kana='トウキョウト', city_kana='チヨダク', town_kana='チヨダ', prefecture_kanji='東京都', city_kanji='千代田区', town_kanji='千代田', prefecture_romaji='Tokyo-to', city_romaji='Chiyoda-ku', town_romaji='Chiyoda')
+    """  # noqa: E501
+
     retval = _zipcode_to_address_map.get(zipcode.replace("-", ""))
     if retval is None:
         raise ValueError(f"Invalid zipcode: {zipcode}")
