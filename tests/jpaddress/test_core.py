@@ -45,10 +45,10 @@ def test_zipcode_to_address_raises_value_error(mocker: MockerFixture) -> None:
         jpaddress.zipcode_to_address("100-0001")
 
 
-def test__init_address_data() -> None:
+def test__init_address_data_with_local_resource() -> None:
     wd = os.path.dirname(__file__)
     with open(os.path.join(wd, "fixtures", "zipcode.csv"), "r", encoding="utf-8") as fin:
-        actual = jpaddress.core._init_address_data(fin)
+        actual = jpaddress.core._init_address_data_with_local_resource(fin)
     assert len(actual) == 10
     assert actual["0600000"] == jpaddress.Address(
         prefecture="北海道",

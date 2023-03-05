@@ -90,7 +90,7 @@ def _tidy_romaji_name(name: str) -> str:
     return retval.strip()
 
 
-def _init_address_data(readable: Iterable[str]) -> Mapping[str, Address]:
+def _init_address_data_with_local_resource(readable: Iterable[str]) -> Mapping[str, Address]:
     """Initialize the zipcode to address map."""
     retval = {}
     zip_code_idx = 0
