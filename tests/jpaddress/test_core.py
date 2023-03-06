@@ -45,10 +45,10 @@ def test_zipcode_to_address_raises_value_error(mocker: MockerFixture) -> None:
         jpaddress.zipcode_to_address("100-0001")
 
 
-def test__init_address_data_with_local_csv() -> None:
+def test__init_address_data_with_string_iterable() -> None:
     wd = os.path.dirname(__file__)
     with open(os.path.join(wd, "fixtures", "zipcode.csv"), "r", encoding="utf-8") as fin:
-        actual = jpaddress.core._init_address_data_with_local_csv(fin)
+        actual = jpaddress.core._init_address_data_with_string_iterable(fin)
     assert len(actual) == 10
     assert actual["0600000"] == jpaddress.Address(
         prefecture="北海道",
@@ -78,3 +78,17 @@ def test__init_address_data_with_local_csv() -> None:
         city_romaji="Sapporo-shi Chuo-ku",
         town_romaji="Asahigaoka",
     )
+
+
+def test__init_address_data_with_local_zipfile(mocker: MockerFixture) -> None:
+    open_zipfile = mocker.patch("jittok.jpaddress.core.open_zipfile")
+    _init_address_data_with_string_iterable = mocker.patch(
+        "jittok.jpaddress.core._init_address_data_with_string_iterable"
+    )
+    codecs = mocker.patch("jittok.jpaddress.core.codecs")
+    actual = jpaddress.core._init_address_data_with_local_zipfile("zipfile.zip", "zipcode.csv")
+    assert actual == _init_address_data_with_string_iterable.return_value
+    open_zipfile.assert_called_once_with("zipfile.zip", "zipcode.csv")
+    codecs.getreader.assert_called_once_with("utf-8")
+    _init_address_data_with_string_iterable.assert_called_once_with(codecs.getreader.return_value.return_value)
+    codecs.getreader.return_value.assert_called_once_with(open_zipfile.return_value.__enter__.return_value)

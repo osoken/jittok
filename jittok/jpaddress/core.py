@@ -1,8 +1,10 @@
+import codecs
 import csv
 import sys
 from dataclasses import dataclass
 
 from .. import jptext
+from ..blob import open_zipfile
 
 if sys.version_info >= (3, 9):
     from collections.abc import Iterable, Mapping
@@ -90,7 +92,7 @@ def _tidy_romaji_name(name: str) -> str:
     return retval.strip()
 
 
-def _init_address_data_with_local_csv(readable: Iterable[str]) -> Mapping[str, Address]:
+def _init_address_data_with_string_iterable(readable: Iterable[str]) -> Mapping[str, Address]:
     """Initialize the zipcode to address map."""
     retval = {}
     zip_code_idx = 0
@@ -122,3 +124,9 @@ def _init_address_data_with_local_csv(readable: Iterable[str]) -> Mapping[str, A
             town_romaji=_tidy_romaji_name(a_town_raw),
         )
     return retval
+
+
+def _init_address_data_with_local_zipfile(zipfile_path: str, filename_in_zipfile: str) -> Mapping[str, Address]:
+    """Initialize the zipcode to address map."""
+    with open_zipfile(zipfile_path, filename_in_zipfile) as f:
+        return _init_address_data_with_string_iterable(codecs.getreader("utf-8")(f))
