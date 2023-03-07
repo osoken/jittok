@@ -73,6 +73,13 @@ def zipcode_to_address(zipcode: str) -> Address:
 
 def _tidy_romaji_name(name: str) -> str:
     """Tidy up the romaji name.
+
+    Args:
+        name (str): Romaji name.
+
+    Returns:
+        str: Tidied up romaji name.
+
     >>> _tidy_romaji_name("TOKYO")
     'Tokyo'
     >>> _tidy_romaji_name("TOKYO TO")
