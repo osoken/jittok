@@ -1,5 +1,7 @@
 import os
 
+from pytest_mock import MockerFixture
+
 from jittok import blob
 
 work_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,3 +16,14 @@ def test_open_zipfile() -> None:
         actual = sut.read()
 
     assert actual == expected
+
+
+def test_save_resource_from_http_request_in_temporary_file(mocker: MockerFixture) -> None:
+    from io import BytesIO
+
+    urlopen = mocker.patch("jittok.blob.core.urlopen")
+    urlopen.return_value.__enter__.return_value = BytesIO(b"test")
+    with blob.save_resource_from_http_request_in_temporary_file("http://example.com") as sut:
+        with open(sut.name, "rb") as fin:
+            actual = fin.read()
+    assert actual == b"test"
