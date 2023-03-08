@@ -4,7 +4,7 @@ import sys
 from dataclasses import dataclass
 
 from .. import jptext
-from ..blob import open_zipfile
+from ..blob import open_zipfile, save_resource_from_http_request_in_temporary_file
 
 if sys.version_info >= (3, 9):
     from collections.abc import Iterable, Mapping
@@ -146,3 +146,9 @@ def _init_address_data_with_local_zipfile(zipfile_path: str, filename_in_zipfile
     """Initialize the zipcode to address map."""
     with open_zipfile(zipfile_path, filename_in_zipfile) as f:
         return _init_address_data_with_string_iterable(codecs.getreader("utf-8")(f))
+
+
+def _init_address_data_with_remote_zipfile(zipfile_url: str, filename_in_zipfile: str) -> Mapping[str, Address]:
+    """Initialize the zipcode to address map."""
+    with save_resource_from_http_request_in_temporary_file(zipfile_url) as f:
+        return _init_address_data_with_local_zipfile(f.name, filename_in_zipfile)
