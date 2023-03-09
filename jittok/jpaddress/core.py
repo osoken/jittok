@@ -151,7 +151,9 @@ def _init_address_data_with_local_zipfile(
         return _init_address_data_with_string_iterable(codecs.getreader("utf-8" if encoding is None else encoding)(f))
 
 
-def _init_address_data_with_remote_zipfile(zipfile_url: str, filename_in_zipfile: str) -> Mapping[str, Address]:
+def _init_address_data_with_remote_zipfile(
+    zipfile_url: str, filename_in_zipfile: str, encoding: Optional[str] = None
+) -> Mapping[str, Address]:
     """Initialize the zipcode to address map."""
     with save_resource_from_http_request_in_temporary_file(zipfile_url) as f:
-        return _init_address_data_with_local_zipfile(f.name, filename_in_zipfile)
+        return _init_address_data_with_local_zipfile(f.name, filename_in_zipfile, encoding=encoding)
