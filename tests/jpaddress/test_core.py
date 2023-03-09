@@ -138,3 +138,14 @@ def test__init_address_data_with_remote_zipfile_accepts_encoding(mocker: MockerF
         "zipcode.csv",
         encoding="CP932",
     )
+
+
+def test__init_address_data_with_japanpost_zipfile(mocker: MockerFixture) -> None:
+    _init_address_data_with_remote_zipfile = mocker.patch(
+        "jittok.jpaddress.core._init_address_data_with_remote_zipfile"
+    )
+    actual = jpaddress.core._init_address_data_with_japanpost_zipfile()
+    assert actual == _init_address_data_with_remote_zipfile.return_value
+    _init_address_data_with_remote_zipfile.assert_called_once_with(
+        "https://www.post.japanpost.jp/zipcode/dl/roman/ken_all_rome.zip", "KEN_ALL_ROME.csv", encoding="CP932"
+    )

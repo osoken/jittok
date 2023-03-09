@@ -157,3 +157,10 @@ def _init_address_data_with_remote_zipfile(
     """Initialize the zipcode to address map."""
     with save_resource_from_http_request_in_temporary_file(zipfile_url) as f:
         return _init_address_data_with_local_zipfile(f.name, filename_in_zipfile, encoding=encoding)
+
+
+def _init_address_data_with_japanpost_zipfile() -> Mapping[str, Address]:
+    """Initialize the zipcode to address map."""
+    return _init_address_data_with_remote_zipfile(
+        "https://www.post.japanpost.jp/zipcode/dl/roman/ken_all_rome.zip", "KEN_ALL_ROME.csv", encoding="CP932"
+    )
