@@ -94,6 +94,20 @@ def test__init_address_data_with_local_zipfile(mocker: MockerFixture) -> None:
     codecs.getreader.return_value.assert_called_once_with(open_zipfile.return_value.__enter__.return_value)
 
 
+def test__init_address_data_with_local_zipfile_accepts_encoding(mocker: MockerFixture) -> None:
+    open_zipfile = mocker.patch("jittok.jpaddress.core.open_zipfile")
+    _init_address_data_with_string_iterable = mocker.patch(
+        "jittok.jpaddress.core._init_address_data_with_string_iterable"
+    )
+    codecs = mocker.patch("jittok.jpaddress.core.codecs")
+    actual = jpaddress.core._init_address_data_with_local_zipfile("zipfile.zip", "zipcode.csv", encoding="CP932")
+    assert actual == _init_address_data_with_string_iterable.return_value
+    open_zipfile.assert_called_once_with("zipfile.zip", "zipcode.csv")
+    codecs.getreader.assert_called_once_with("CP932")
+    _init_address_data_with_string_iterable.assert_called_once_with(codecs.getreader.return_value.return_value)
+    codecs.getreader.return_value.assert_called_once_with(open_zipfile.return_value.__enter__.return_value)
+
+
 def test__init_address_data_with_remote_zipfile(mocker: MockerFixture) -> None:
     save_resource_from_http_request_in_temporary_file = mocker.patch(
         "jittok.jpaddress.core.save_resource_from_http_request_in_temporary_file"
