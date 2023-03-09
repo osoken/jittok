@@ -2,6 +2,7 @@ import codecs
 import csv
 import sys
 from dataclasses import dataclass
+from typing import Optional
 
 from .. import jptext
 from ..blob import open_zipfile, save_resource_from_http_request_in_temporary_file
@@ -142,10 +143,12 @@ def _init_address_data_with_string_iterable(readable: Iterable[str]) -> Mapping[
     return retval
 
 
-def _init_address_data_with_local_zipfile(zipfile_path: str, filename_in_zipfile: str) -> Mapping[str, Address]:
+def _init_address_data_with_local_zipfile(
+    zipfile_path: str, filename_in_zipfile: str, encoding: Optional[str] = None
+) -> Mapping[str, Address]:
     """Initialize the zipcode to address map."""
     with open_zipfile(zipfile_path, filename_in_zipfile) as f:
-        return _init_address_data_with_string_iterable(codecs.getreader("utf-8")(f))
+        return _init_address_data_with_string_iterable(codecs.getreader("utf-8" if encoding is None else encoding)(f))
 
 
 def _init_address_data_with_remote_zipfile(zipfile_url: str, filename_in_zipfile: str) -> Mapping[str, Address]:
