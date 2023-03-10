@@ -149,3 +149,28 @@ def test__init_address_data_with_japanpost_zipfile(mocker: MockerFixture) -> Non
     _init_address_data_with_remote_zipfile.assert_called_once_with(
         "https://www.post.japanpost.jp/zipcode/dl/roman/ken_all_rome.zip", "KEN_ALL_ROME.csv", encoding="CP932"
     )
+
+
+def test_address_lookup_default_uses_japanpost_data(mocker: MockerFixture) -> None:
+    address = jpaddress.core.Address(
+        prefecture_kana="ホッカイドウ",
+        city_kana="サッポロシ",
+        town_kana="ミナトマチ",
+        prefecture_kanji="北海道",
+        city_kanji="札幌市",
+        town_kanji="南",
+        prefecture="北海道",
+        city="札幌市",
+        town="南",
+        prefecture_romaji="Hokkaido",
+        city_romaji="Sapporo-shi",
+        town_romaji="Minato-machi",
+    )
+    _init_address_data_with_japanpost_zipfile = mocker.patch(
+        "jittok.jpaddress.core._init_address_data_with_japanpost_zipfile"
+    )
+    _init_address_data_with_japanpost_zipfile.return_value = {"0010000": address}
+    sut = jpaddress.AddressLookup()
+    expected = address
+    actual = sut.get("0010000")
+    assert actual == expected
