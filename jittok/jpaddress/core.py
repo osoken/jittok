@@ -2,7 +2,7 @@ import codecs
 import csv
 import sys
 from dataclasses import dataclass
-from typing import Optional
+from typing import Dict, Optional
 
 from .. import jptext
 from ..blob import open_zipfile, save_resource_from_http_request_in_temporary_file
@@ -155,3 +155,8 @@ def _init_address_data_with_japanpost_zipfile() -> Mapping[str, Address]:
     return _init_address_data_with_remote_zipfile(
         "https://www.post.japanpost.jp/zipcode/dl/roman/ken_all_rome.zip", "KEN_ALL_ROME.csv", encoding="CP932"
     )
+
+
+class AddressLookup(Dict[str, Address]):
+    def __init__(self) -> None:
+        super(AddressLookup, self).__init__(_init_address_data_with_japanpost_zipfile())
