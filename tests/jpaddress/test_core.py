@@ -172,5 +172,17 @@ def test_address_lookup_default_uses_japanpost_data(mocker: MockerFixture) -> No
     _init_address_data_with_japanpost_zipfile.return_value = {"0010000": address}
     sut = jpaddress.AddressLookup()
     expected = address
-    actual = sut.get("0010000")
+    actual = sut["0010000"]
     assert actual == expected
+
+
+def test_address_lookup_raises_error_when_zipcode_is_not_found(mocker: MockerFixture) -> None:
+    from jittok.jpaddress.exceptions import ZipcodeNotFoundError
+
+    _init_address_data_with_japanpost_zipfile = mocker.patch(
+        "jittok.jpaddress.core._init_address_data_with_japanpost_zipfile"
+    )
+    _init_address_data_with_japanpost_zipfile.return_value = {}
+    sut = jpaddress.AddressLookup()
+    with pytest.raises(ZipcodeNotFoundError):
+        sut["0010000"]

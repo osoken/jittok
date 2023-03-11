@@ -6,6 +6,7 @@ from typing import Dict, Optional
 
 from .. import jptext
 from ..blob import open_zipfile, save_resource_from_http_request_in_temporary_file
+from .exceptions import ZipcodeNotFoundError
 
 if sys.version_info >= (3, 9):
     from collections.abc import Iterable, Mapping
@@ -169,3 +170,6 @@ def _init_address_data_with_japanpost_zipfile() -> Mapping[str, Address]:
 class AddressLookup(Dict[str, Address]):
     def __init__(self) -> None:
         super(AddressLookup, self).__init__(_init_address_data_with_japanpost_zipfile())
+
+    def __missing__(self, key: str) -> Address:
+        raise ZipcodeNotFoundError(f"Invalid zipcode: {key}")
