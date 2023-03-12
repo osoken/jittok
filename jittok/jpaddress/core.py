@@ -9,9 +9,9 @@ from ..blob import open_zipfile, save_resource_from_http_request_in_temporary_fi
 from .exceptions import ZipcodeNotFoundError
 
 if sys.version_info >= (3, 9):
-    from collections.abc import Iterable, Mapping
+    from collections.abc import Generator, Iterable, Mapping
 else:
-    from typing import Iterable, Mapping
+    from typing import Generator, Iterable, Mapping
 
 
 kks = pykakasi.kakasi()
@@ -173,3 +173,8 @@ class AddressLookup(Dict[str, Address]):
 
     def __missing__(self, key: str) -> Address:
         raise ZipcodeNotFoundError(f"Invalid zipcode: {key}")
+
+    def search(self, search_word: str) -> Generator[Address, None, None]:
+        for v in self.values():
+            if search_word in v.prefecture or search_word in v.city or search_word in v.town:
+                yield v

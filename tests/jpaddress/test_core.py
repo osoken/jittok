@@ -186,3 +186,43 @@ def test_address_lookup_raises_error_when_zipcode_is_not_found(mocker: MockerFix
     sut = jpaddress.AddressLookup()
     with pytest.raises(ZipcodeNotFoundError):
         sut["0010000"]
+
+
+def test_address_lookup_search(mocker: MockerFixture) -> None:
+    address0 = jpaddress.core.Address(
+        prefecture_kana="ホッカイドウ",
+        city_kana="サッポロシ",
+        town_kana="ミナトマチ",
+        prefecture_kanji="北海道",
+        city_kanji="札幌市",
+        town_kanji="南",
+        prefecture="北海道",
+        city="札幌市",
+        town="南",
+        prefecture_romaji="Hokkaido",
+        city_romaji="Sapporo-shi",
+        town_romaji="Minato-machi",
+    )
+    address1 = jpaddress.core.Address(
+        prefecture_kana="トウキョウト",
+        city_kana="トウキョウシ",
+        town_kana="ミナトマチ",
+        prefecture_kanji="東京都",
+        city_kanji="東京市",
+        town_kanji="港町",
+        prefecture="東京都",
+        city="東京市",
+        town="港町",
+        prefecture_romaji="Tokyo-to",
+        city_romaji="Tokyo-shi",
+        town_romaji="Minato-machi",
+    )
+
+    _init_address_data_with_japanpost_zipfile = mocker.patch(
+        "jittok.jpaddress.core._init_address_data_with_japanpost_zipfile"
+    )
+    _init_address_data_with_japanpost_zipfile.return_value = {"0010000": address0, "0010001": address1}
+    sut = jpaddress.AddressLookup()
+    expected = iter([address0])
+    actual = sut.search("北海")
+    assert list(actual) == list(expected)
