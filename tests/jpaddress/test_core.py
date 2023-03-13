@@ -9,6 +9,7 @@ from jittok import jpaddress
 def test_zipcode_to_address(mocker: MockerFixture) -> None:
     _zipcode_to_address_map = mocker.patch("jittok.jpaddress.core._zipcode_to_address_map")
     _zipcode_to_address_map.get.return_value = jpaddress.Address(
+        zipcode="1000001",
         prefecture="東京都",
         city="千代田区",
         town="千代田",
@@ -35,6 +36,7 @@ def test_zipcode_to_address(mocker: MockerFixture) -> None:
     assert actual.prefecture_romaji == "Tokyo-to"
     assert actual.city_romaji == "Chiyoda-ku"
     assert actual.town_romaji == "Chiyoda"
+    assert actual.zipcode == "1000001"
     assert str(actual) == "東京都 千代田区 千代田"
 
 
@@ -51,6 +53,7 @@ def test__init_address_data_with_string_iterable() -> None:
         actual = jpaddress.core._init_address_data_with_string_iterable(fin)
     assert len(actual) == 10
     assert actual["0600000"] == jpaddress.Address(
+        zipcode="0600000",
         prefecture="北海道",
         city="札幌市中央区",
         town="",
@@ -65,6 +68,7 @@ def test__init_address_data_with_string_iterable() -> None:
         town_romaji="",
     )
     assert actual["0640941"] == jpaddress.Address(
+        zipcode="0640941",
         prefecture="北海道",
         city="札幌市中央区",
         town="旭ケ丘",
@@ -153,6 +157,7 @@ def test__init_address_data_with_japanpost_zipfile(mocker: MockerFixture) -> Non
 
 def test_address_lookup_default_uses_japanpost_data(mocker: MockerFixture) -> None:
     address = jpaddress.core.Address(
+        zipcode="0010000",
         prefecture_kana="ホッカイドウ",
         city_kana="サッポロシ",
         town_kana="ミナトマチ",
@@ -190,6 +195,7 @@ def test_address_lookup_raises_error_when_zipcode_is_not_found(mocker: MockerFix
 
 def test_address_lookup_search(mocker: MockerFixture) -> None:
     address0 = jpaddress.core.Address(
+        zipcode="0010000",
         prefecture_kana="ホッカイドウ",
         city_kana="サッポロシ",
         town_kana="ミナトマチ",
@@ -204,6 +210,7 @@ def test_address_lookup_search(mocker: MockerFixture) -> None:
         town_romaji="Minato-machi",
     )
     address1 = jpaddress.core.Address(
+        zipcode="0010001",
         prefecture_kana="トウキョウト",
         city_kana="トウキョウシ",
         town_kana="ミナトマチ",

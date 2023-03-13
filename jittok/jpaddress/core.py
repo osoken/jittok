@@ -16,6 +16,7 @@ else:
 
 @dataclass(eq=True, frozen=True)
 class Address:
+    zipcode: str
     prefecture: str
     city: str
     town: str
@@ -35,6 +36,7 @@ class Address:
 
 _zipcode_to_address_map = {
     "1000001": Address(
+        zipcode="1000001",
         prefecture="東京都",
         city="千代田区",
         town="千代田",
@@ -64,7 +66,7 @@ def zipcode_to_address(zipcode: str) -> Address:
         ValueError: Invalid zipcode.
 
     >>> zipcode_to_address("1000001")
-    Address(prefecture='東京都', city='千代田区', town='千代田', prefecture_kana='トウキョウト', city_kana='チヨダク', town_kana='チヨダ', prefecture_kanji='東京都', city_kanji='千代田区', town_kanji='千代田', prefecture_romaji='Tokyo-to', city_romaji='Chiyoda-ku', town_romaji='Chiyoda')
+    Address(zipcode='1000001', prefecture='東京都', city='千代田区', town='千代田', prefecture_kana='トウキョウト', city_kana='チヨダク', town_kana='チヨダ', prefecture_kanji='東京都', city_kanji='千代田区', town_kanji='千代田', prefecture_romaji='Tokyo-to', city_romaji='Chiyoda-ku', town_romaji='Chiyoda')
     """  # noqa: E501
 
     retval = _zipcode_to_address_map.get(zipcode.replace("-", ""))
@@ -119,6 +121,7 @@ def _init_address_data_with_string_iterable(readable: Iterable[str]) -> Mapping[
         a_city_raw = d[a_city_idx]
         a_town_raw = d[a_town_idx] if d[a_town_idx] != "IKANIKEISAIGANAIBAAI" else ""
         retval[d[zip_code_idx]] = Address(
+            zipcode=d[zip_code_idx],
             prefecture=prefecture_kanji,
             city=city_kanji,
             town=town_kanji,
