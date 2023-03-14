@@ -162,8 +162,11 @@ def _init_address_data_with_japanpost_zipfile() -> Mapping[str, Address]:
 
 
 class AddressLookup(Dict[str, Address]):
-    def __init__(self) -> None:
-        super(AddressLookup, self).__init__(_init_address_data_with_japanpost_zipfile())
+    def __init__(self, data: Optional[Iterable[Address]] = None) -> None:
+        if data is None:
+            super(AddressLookup, self).__init__(_init_address_data_with_japanpost_zipfile())
+        else:
+            super(AddressLookup, self).__init__({a.zipcode: a for a in data})
 
     def __missing__(self, key: str) -> Address:
         raise ZipcodeNotFoundError(f"Invalid zipcode: {key}")
