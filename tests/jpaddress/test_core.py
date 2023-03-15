@@ -47,10 +47,10 @@ def test_zipcode_to_address_raises_value_error(mocker: MockerFixture) -> None:
         jpaddress.zipcode_to_address("100-0001")
 
 
-def test__init_address_data_with_string_iterable() -> None:
+def test_address_lookup_from_csv_string_iterable() -> None:
     wd = os.path.dirname(__file__)
     with open(os.path.join(wd, "fixtures", "zipcode.csv"), "r", encoding="utf-8") as fin:
-        actual = jpaddress.core._init_address_data_with_string_iterable(fin)
+        actual = jpaddress.AddressLookup.from_csv_string_iterable(fin)
     assert len(actual) == 10
     assert actual["0600000"] == jpaddress.Address(
         zipcode="0600000",
@@ -84,73 +84,67 @@ def test__init_address_data_with_string_iterable() -> None:
     )
 
 
-def test__init_address_data_with_local_zipfile(mocker: MockerFixture) -> None:
+def test_address_lookup_from_csv_local_zipfile(mocker: MockerFixture) -> None:
     open_zipfile = mocker.patch("jittok.jpaddress.core.open_zipfile")
-    _init_address_data_with_string_iterable = mocker.patch(
-        "jittok.jpaddress.core._init_address_data_with_string_iterable"
-    )
+    from_csv_string_iterable = mocker.patch("jittok.jpaddress.AddressLookup.from_csv_string_iterable")
     codecs = mocker.patch("jittok.jpaddress.core.codecs")
-    actual = jpaddress.core._init_address_data_with_local_zipfile("zipfile.zip", "zipcode.csv")
-    assert actual == _init_address_data_with_string_iterable.return_value
+    actual = jpaddress.AddressLookup.from_csv_local_zipfile("zipfile.zip", "zipcode.csv")
+    assert actual == from_csv_string_iterable.return_value
     open_zipfile.assert_called_once_with("zipfile.zip", "zipcode.csv")
     codecs.getreader.assert_called_once_with("utf-8")
-    _init_address_data_with_string_iterable.assert_called_once_with(codecs.getreader.return_value.return_value)
+    from_csv_string_iterable.assert_called_once_with(codecs.getreader.return_value.return_value)
     codecs.getreader.return_value.assert_called_once_with(open_zipfile.return_value.__enter__.return_value)
 
 
-def test__init_address_data_with_local_zipfile_accepts_encoding(mocker: MockerFixture) -> None:
+def test_address_lookup_from_csv_local_zipfile_accepts_encoding(mocker: MockerFixture) -> None:
     open_zipfile = mocker.patch("jittok.jpaddress.core.open_zipfile")
-    _init_address_data_with_string_iterable = mocker.patch(
-        "jittok.jpaddress.core._init_address_data_with_string_iterable"
-    )
+    from_csv_string_iterable = mocker.patch("jittok.jpaddress.AddressLookup.from_csv_string_iterable")
     codecs = mocker.patch("jittok.jpaddress.core.codecs")
-    actual = jpaddress.core._init_address_data_with_local_zipfile("zipfile.zip", "zipcode.csv", encoding="CP932")
-    assert actual == _init_address_data_with_string_iterable.return_value
+    actual = jpaddress.AddressLookup.from_csv_local_zipfile("zipfile.zip", "zipcode.csv", encoding="euc-jp")
+    assert actual == from_csv_string_iterable.return_value
     open_zipfile.assert_called_once_with("zipfile.zip", "zipcode.csv")
-    codecs.getreader.assert_called_once_with("CP932")
-    _init_address_data_with_string_iterable.assert_called_once_with(codecs.getreader.return_value.return_value)
+    codecs.getreader.assert_called_once_with("euc-jp")
+    from_csv_string_iterable.assert_called_once_with(codecs.getreader.return_value.return_value)
     codecs.getreader.return_value.assert_called_once_with(open_zipfile.return_value.__enter__.return_value)
 
 
-def test__init_address_data_with_remote_zipfile(mocker: MockerFixture) -> None:
+def test_address_lookup_from_csv_remote_zipfile(mocker: MockerFixture) -> None:
     save_resource_from_http_request_in_temporary_file = mocker.patch(
         "jittok.jpaddress.core.save_resource_from_http_request_in_temporary_file"
     )
-    _init_address_data_with_local_zipfile = mocker.patch("jittok.jpaddress.core._init_address_data_with_local_zipfile")
-    actual = jpaddress.core._init_address_data_with_remote_zipfile("http://example.com/zipcode.zip", "zipcode.csv")
-    assert actual == _init_address_data_with_local_zipfile.return_value
+    from_csv_local_zipfile = mocker.patch("jittok.jpaddress.AddressLookup.from_csv_local_zipfile")
+    actual = jpaddress.AddressLookup.from_csv_remote_zipfile("http://example.com/zipcode.zip", "zipcode.csv")
+    assert actual == from_csv_local_zipfile.return_value
     save_resource_from_http_request_in_temporary_file.assert_called_once_with("http://example.com/zipcode.zip")
-    _init_address_data_with_local_zipfile.assert_called_once_with(
+    from_csv_local_zipfile.assert_called_once_with(
         save_resource_from_http_request_in_temporary_file.return_value.__enter__.return_value.name,
         "zipcode.csv",
         encoding=None,
     )
 
 
-def test__init_address_data_with_remote_zipfile_accepts_encoding(mocker: MockerFixture) -> None:
+def test_address_lookup_from_csv_remote_zipfile_accepts_encoding(mocker: MockerFixture) -> None:
     save_resource_from_http_request_in_temporary_file = mocker.patch(
         "jittok.jpaddress.core.save_resource_from_http_request_in_temporary_file"
     )
-    _init_address_data_with_local_zipfile = mocker.patch("jittok.jpaddress.core._init_address_data_with_local_zipfile")
-    actual = jpaddress.core._init_address_data_with_remote_zipfile(
+    from_csv_local_zipfile = mocker.patch("jittok.jpaddress.AddressLookup.from_csv_local_zipfile")
+    actual = jpaddress.AddressLookup.from_csv_remote_zipfile(
         "http://example.com/zipcode.zip", "zipcode.csv", encoding="CP932"
     )
-    assert actual == _init_address_data_with_local_zipfile.return_value
+    assert actual == from_csv_local_zipfile.return_value
     save_resource_from_http_request_in_temporary_file.assert_called_once_with("http://example.com/zipcode.zip")
-    _init_address_data_with_local_zipfile.assert_called_once_with(
+    from_csv_local_zipfile.assert_called_once_with(
         save_resource_from_http_request_in_temporary_file.return_value.__enter__.return_value.name,
         "zipcode.csv",
         encoding="CP932",
     )
 
 
-def test__init_address_data_with_japanpost_zipfile(mocker: MockerFixture) -> None:
-    _init_address_data_with_remote_zipfile = mocker.patch(
-        "jittok.jpaddress.core._init_address_data_with_remote_zipfile"
-    )
-    actual = jpaddress.core._init_address_data_with_japanpost_zipfile()
-    assert actual == _init_address_data_with_remote_zipfile.return_value
-    _init_address_data_with_remote_zipfile.assert_called_once_with(
+def test_from_japanpost_zipfile(mocker: MockerFixture) -> None:
+    from_csv_remote_zipfile = mocker.patch("jittok.jpaddress.AddressLookup.from_csv_remote_zipfile")
+    actual = jpaddress.AddressLookup.from_japanpost_zipfile()
+    assert actual == from_csv_remote_zipfile.return_value
+    from_csv_remote_zipfile.assert_called_once_with(
         "https://www.post.japanpost.jp/zipcode/dl/roman/ken_all_rome.zip", "KEN_ALL_ROME.csv", encoding="CP932"
     )
 
@@ -171,10 +165,10 @@ def test_address_lookup_default_uses_japanpost_data(mocker: MockerFixture) -> No
         city_romaji="Sapporo-shi",
         town_romaji="Minami",
     )
-    _init_address_data_with_japanpost_zipfile = mocker.patch(
-        "jittok.jpaddress.core._init_address_data_with_japanpost_zipfile"
+    from_japanpost_zipfile = mocker.patch(
+        "jittok.jpaddress.AddressLookup.from_japanpost_zipfile",
     )
-    _init_address_data_with_japanpost_zipfile.return_value = {"0010000": address}
+    from_japanpost_zipfile.return_value = {"0010000": address}
     sut = jpaddress.AddressLookup()
     expected = address
     actual = sut["0010000"]
@@ -221,10 +215,8 @@ def test_address_lookup_init_with_address_data_iterable() -> None:
 def test_address_lookup_raises_error_when_zipcode_is_not_found(mocker: MockerFixture) -> None:
     from jittok.jpaddress.exceptions import ZipcodeNotFoundError
 
-    _init_address_data_with_japanpost_zipfile = mocker.patch(
-        "jittok.jpaddress.core._init_address_data_with_japanpost_zipfile"
-    )
-    _init_address_data_with_japanpost_zipfile.return_value = {}
+    from_japanpost_zipfile = mocker.patch("jittok.jpaddress.AddressLookup.from_japanpost_zipfile")
+    from_japanpost_zipfile.return_value = {}
     sut = jpaddress.AddressLookup()
     with pytest.raises(ZipcodeNotFoundError):
         sut["0010000"]
@@ -262,10 +254,8 @@ def test_address_lookup_search(mocker: MockerFixture) -> None:
         town_romaji="Minato-machi",
     )
 
-    _init_address_data_with_japanpost_zipfile = mocker.patch(
-        "jittok.jpaddress.core._init_address_data_with_japanpost_zipfile"
-    )
-    _init_address_data_with_japanpost_zipfile.return_value = {"0010000": address0, "0010001": address1}
+    from_japanpost_zipfile = mocker.patch("jittok.jpaddress.AddressLookup.from_japanpost_zipfile")
+    from_japanpost_zipfile.return_value = {"0010000": address0, "0010001": address1}
     sut = jpaddress.AddressLookup()
     expected = iter([address0])
     actual = sut.search("北海")
