@@ -13,12 +13,7 @@ if sys.version_info >= (3, 9):
 else:
     from typing import Generator, Iterable
 
-
-kks = pykakasi.kakasi()
-
 import pykakasi
-
-from .. import jptext
 
 kks = pykakasi.kakasi()
 
