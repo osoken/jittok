@@ -110,8 +110,7 @@ def _tidy_romaji_name(name: str) -> str:
 class AddressLookup(Dict[str, Address]):
     def __init__(self, data: Optional[Iterable[Address]] = None) -> None:
         if data is None:
-            super(AddressLookup, self).__init__()
-            self.update(self.from_japanpost_zipfile().items())
+            super(AddressLookup, self).__init__(self.from_japanpost_zipfile().items())
         else:
             super(AddressLookup, self).__init__({a.zipcode: a for a in data})
 
