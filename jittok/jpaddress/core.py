@@ -179,3 +179,6 @@ class AddressLookup(Dict[str, Address]):
         return cls.from_csv_remote_zipfile(
             "https://www.post.japanpost.jp/zipcode/dl/roman/ken_all_rome.zip", "KEN_ALL_ROME.csv", encoding="CP932"
         )
+
+    def __getitem__(self, key: str) -> Address:
+        return super(AddressLookup, self).__getitem__(key.replace("-", ""))

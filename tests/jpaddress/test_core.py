@@ -260,3 +260,25 @@ def test_address_lookup_search(mocker: MockerFixture) -> None:
     expected = iter([address0])
     actual = sut.search("北海")
     assert list(actual) == list(expected)
+
+
+def test_address_lookup_getitem_removes_hyphen() -> None:
+    address = jpaddress.core.Address(
+        zipcode="0010000",
+        prefecture_kana="ホッカイドウ",
+        city_kana="サッポロシ",
+        town_kana="ミナミ",
+        prefecture_kanji="北海道",
+        city_kanji="札幌市",
+        town_kanji="南",
+        prefecture="北海道",
+        city="札幌市",
+        town="南",
+        prefecture_romaji="Hokkaido",
+        city_romaji="Sapporo-shi",
+        town_romaji="Minami",
+    )
+    sut = jpaddress.AddressLookup([address])
+    expected = address
+    actual = sut["001-0000"]
+    assert actual == expected
