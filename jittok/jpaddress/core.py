@@ -16,6 +16,7 @@ else:
 import pykakasi
 
 kks = pykakasi.kakasi()
+address_lookup_cache: Optional["AddressLookup"] = None
 
 
 @dataclass(eq=True, frozen=True)
@@ -38,25 +39,6 @@ class Address:
         return f"{self.prefecture} {self.city} {self.town}"
 
 
-_zipcode_to_address_map = {
-    "1000001": Address(
-        zipcode="1000001",
-        prefecture="東京都",
-        city="千代田区",
-        town="千代田",
-        prefecture_kana="トウキョウト",
-        city_kana="チヨダク",
-        town_kana="チヨダ",
-        prefecture_kanji="東京都",
-        city_kanji="千代田区",
-        town_kanji="千代田",
-        prefecture_romaji="Tokyo-to",
-        city_romaji="Chiyoda-ku",
-        town_romaji="Chiyoda",
-    )
-}
-
-
 def zipcode_to_address(zipcode: str) -> Address:
     """Convert a zipcode to an address.
 
@@ -69,13 +51,16 @@ def zipcode_to_address(zipcode: str) -> Address:
     Raises:
         ValueError: Invalid zipcode.
 
-    >>> zipcode_to_address("1000001")
+    >>> from unittest.mock import patch
+    >>> with patch("jittok.jpaddress.core.address_lookup_cache") as mock:
+    ...     mock.__getitem__.return_value = Address(zipcode='1000001', prefecture='東京都', city='千代田区', town='千代田', prefecture_kana='トウキョウト', city_kana='チヨダク', town_kana='チヨダ', prefecture_kanji='東京都', city_kanji='千代田区', town_kanji='千代田', prefecture_romaji='Tokyo-to', city_romaji='Chiyoda-ku', town_romaji='Chiyoda')
+    ...     zipcode_to_address("1000001")
     Address(zipcode='1000001', prefecture='東京都', city='千代田区', town='千代田', prefecture_kana='トウキョウト', city_kana='チヨダク', town_kana='チヨダ', prefecture_kanji='東京都', city_kanji='千代田区', town_kanji='千代田', prefecture_romaji='Tokyo-to', city_romaji='Chiyoda-ku', town_romaji='Chiyoda')
     """  # noqa: E501
-
-    retval = _zipcode_to_address_map.get(zipcode.replace("-", ""))
-    if retval is None:
-        raise ValueError(f"Invalid zipcode: {zipcode}")
+    global address_lookup_cache
+    if address_lookup_cache is None:
+        address_lookup_cache = AddressLookup()
+    retval = address_lookup_cache[zipcode]
     return retval
 
 

@@ -7,8 +7,8 @@ from jittok import jpaddress
 
 
 def test_zipcode_to_address(mocker: MockerFixture) -> None:
-    _zipcode_to_address_map = mocker.patch("jittok.jpaddress.core._zipcode_to_address_map")
-    _zipcode_to_address_map.get.return_value = jpaddress.Address(
+    address_lookup_cache = mocker.patch("jittok.jpaddress.core.address_lookup_cache")
+    address_lookup_cache.__getitem__.return_value = jpaddress.Address(
         zipcode="1000001",
         prefecture="東京都",
         city="千代田区",
@@ -41,10 +41,12 @@ def test_zipcode_to_address(mocker: MockerFixture) -> None:
 
 
 def test_zipcode_to_address_raises_value_error(mocker: MockerFixture) -> None:
-    _zipcode_to_address_map = mocker.patch("jittok.jpaddress.core._zipcode_to_address_map")
-    _zipcode_to_address_map.get.return_value = None
-    with pytest.raises(ValueError):
-        jpaddress.zipcode_to_address("100-0001")
+    from jittok.jpaddress.exceptions import ZipcodeNotFoundError
+
+    address_lookup_cache = mocker.patch("jittok.jpaddress.core.address_lookup_cache")
+    address_lookup_cache.__getitem__.side_effect = ZipcodeNotFoundError("0010000")
+    with pytest.raises(ZipcodeNotFoundError):
+        jpaddress.zipcode_to_address("0010000")
 
 
 def test_address_lookup_from_csv_string_iterable() -> None:
