@@ -25,7 +25,12 @@ setup(
     long_description=__long_description__,
     long_description_content_type="text/markdown",
     package_data={__package_name__: ["py.typed"]},
-    packages=[__package_name__, f"{__package_name__}.jptext", f"{__package_name__}.jpdatetime"],
+    packages=[
+        __package_name__,
+        f"{__package_name__}.jptext",
+        f"{__package_name__}.jpdatetime",
+        f"{__package_name__}.jpaddress",
+    ],
     install_requires=install_requires,
     extras_require={
         "dev": dev_extras_require,
