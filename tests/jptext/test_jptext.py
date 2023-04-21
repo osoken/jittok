@@ -216,6 +216,17 @@ def test_normalize_remove_multiple_spaces(raw: str, expected: str) -> None:
 @pytest.mark.parametrize(
     ["raw", "expected"],
     [
+        ["葛󠄀", "葛"],
+    ],
+)
+def test_normalize_remove_variation_selectors(raw: str, expected: str) -> None:
+    actual = jptext.normalize(raw, remove_variation_selectors=True)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ["raw", "expected"],
+    [
         [" \t \n", " "],
     ],
 )
